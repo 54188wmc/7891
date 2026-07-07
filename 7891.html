@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>微信</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
+
+
+
+
+
+微信
+
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1a1a2e;color:#fff;min-height:100vh}
 button{border:none;outline:none;font-family:inherit;cursor:pointer;background:transparent}
@@ -101,7 +101,6 @@ textarea{resize:none;overflow:hidden}
 .chat-send{padding:12px 18px;height:44px;background:linear-gradient(135deg,#e94560,#ff6b6b);color:#fff;border-radius:24px;font-size:15px;white-space:nowrap;transition:transform 0.2s}
 .chat-send:active{transform:scale(0.97)}
 
-/* 群资料页面核心样式 */
 .group-info{display:none;height:100vh;flex-direction:column;background:#1a1a2e}
 .group-info.show{display:flex}
 .group-header{padding:15px;display:flex;align-items:center;background:rgba(0,0,0,0.3)}
@@ -112,14 +111,12 @@ textarea{resize:none;overflow:hidden}
 .group-notice{background:rgba(255,152,0,0.1);border-left:3px solid #ff9800;border-radius:8px;padding:12px 15px;margin-bottom:15px;font-size:13px;line-height:1.5}
 .group-notice-title{font-weight:600;margin-bottom:5px;color:#ffb74d}
 
-/* 群成员网格，加减按钮固定在最后一位成员末尾 */
 .group-member-wrap{position:relative;margin-bottom:15px}
 .group-member-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:15px;background:rgba(255,255,255,0.05);border-radius:12px}
 .group-member-cell{text-align:center;cursor:pointer;position:relative}
 .group-member-avatar{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 5px;background:linear-gradient(135deg,#667eea,#764ba2)}
 .group-member-name{font-size:11px;opacity:0.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* 加减号控制器，只出现在成员列表末尾 */
 .group-member-operate{display:flex;gap:10px;justify-content:center;margin-top:12px}
 .operate-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s}
 .operate-btn:active{background:rgba(255,255,255,0.2);transform:scale(0.95)}
@@ -129,119 +126,112 @@ textarea{resize:none;overflow:hidden}
 .empty{text-align:center;padding:60px 20px;opacity:0.5}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);color:#fff;padding:15px 30px;border-radius:10px;z-index:2000;font-size:15px;pointer-events:none;animation:fadeInOut 1.6s ease-in-out}
 @keyframes fadeInOut{0%{opacity:0}15%{opacity:1}85%{opacity:1}100%{opacity:0}}
-</style>
-</head>
-<body>
 
-<div class="login" id="loginPage">
-  <div class="login-logo">💬</div>
-  <div class="login-title">微信</div>
-  <input type="text" class="login-input" id="loginId" placeholder="微信号（纯数字）">
-  <input type="password" class="login-input" id="loginPwd" placeholder="密码">
-  <button class="login-btn" onclick="doLogin()">登 录</button>
-  <button class="login-btn secondary" onclick="showPopup('registerPopup')">注 册 新账号</button>
-</div>
 
-<div class="popup" id="registerPopup">
-  <div class="popup-box">
-    <div class="popup-head">注册微信<span class="popup-close" onclick="closePopup('registerPopup')">×</span></div>
-    <div class="popup-body">
-      <input type="text" class="popup-input" id="regId" placeholder="微信号（纯数字）">
-      <input type="password" class="popup-input" id="regPwd" placeholder="密码（至少6位）">
-      <input type="password" class="popup-input" id="regPwd2" placeholder="确认密码">
-      <input type="text" class="popup-input" id="regName" placeholder="昵称">
-      <button class="popup-btn green" onclick="doRegister()">注 册</button>
-    </div>
-  </div>
-</div>
 
-<div id="mainPage" class="main">
-  <div class="header">
-    <h1>💬 微信</h1>
-    <button class="header-btn" onclick="showAddMenu()">+ 添加</button>
-  </div>
-  <div class="tabs">
-    <div class="tab active" id="tabChats" onclick="switchTab('chats')">💬 消息</div>
-    <div class="tab" id="tabContacts" onclick="switchTab('contacts')">👥 通讯录</div>
-    <div class="tab" id="tabMoments" onclick="switchTab('moments')">🌤 朋友圈</div>
-    <div class="tab" id="tabMe" onclick="switchTab('me')">👤 我的</div>
-  </div>
 
-  <div class="content" id="contentChats"><div id="msgList" class="empty">暂无会话</div></div>
-  <div class="content" id="contentContacts" style="display:none"><div class="empty">暂无好友</div></div>
-  <div class="content" id="contentMoments" style="display:none">
-    <button class="popup-btn green" style="margin-bottom:15px;width:100%" onclick="showMomentPopup()">✏️ 发布朋友圈</button>
-    <div id="momentList"></div>
-  </div>
-  <div class="content" id="contentMe" style="display:none">
-    <div class="profile">
-      <div class="profile-avatar" id="myAvatar">👤</div>
-      <div class="profile-name" id="myName">未登录</div>
-      <div class="profile-sign" id="mySign">这个人很懒，什么都没写</div>
-    </div>
-    <div class="menu-card">
-      <div class="menu-item" onclick="doLogout()">
-        <div class="menu-icon" style="background:linear-gradient(135deg,#e94560,#ff6b6b)">🚪</div>
-        <div class="menu-text">退出登录</div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- 聊天页面 -->
-<div id="chatPage" class="chat">
-  <div class="chat-header">
-    <span class="chat-back" onclick="closeChat()">‹</span>
-    <span class="chat-title" id="chatTitle">聊天</span>
-    <span class="chat-more" id="chatMoreBtn" onclick="openGroupInfo()">⋯</span>
-  </div>
-  <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-input-bar">
-    <textarea class="chat-input" id="chatInput" placeholder="输入内容，支持超长文本" oninput="autoResize(this)"></textarea>
-    <button class="chat-send" onclick="sendMessage()">发送</button>
-  </div>
-</div>
+  💬
+  微信
+  
+  
+  登 录
+  注 册 新账号
 
-<!-- 群资料页面（核心功能） -->
-<div id="groupInfoPage" class="group-info">
-  <div class="group-header">
-    <span class="group-back" onclick="closeGroupInfo()">‹</span>
-    <span class="group-title" id="groupInfoTitle">群聊信息</span>
-  </div>
-  <div class="group-content" id="groupInfoContent">
-    <div class="group-notice">
-      <div class="group-notice-title">群公告</div>
-      <div id="groupNoticeContent">暂无群公告</div>
-    </div>
 
-    <div class="group-member-wrap">
-      <div class="group-member-grid" id="groupMemberGrid">
-        <!-- 成员动态渲染 -->
-      </div>
-      <!-- 加减按钮固定在成员列表末尾，仅此处显示 -->
-      <div class="group-member-operate">
-        <button class="operate-btn plus" onclick="addGroupMember()">+</button>
-        <button class="operate-btn minus" onclick="removeGroupMember()">-</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- 发布朋友圈弹窗 -->
-<div class="popup" id="momentPopup">
-  <div class="popup-box">
-    <div class="popup-head">发布朋友圈<span class="popup-close" onclick="closePopup('momentPopup')">×</span></div>
-    <div class="popup-body">
-      <textarea class="popup-textarea" id="momentContent" placeholder="写下你的动态，支持超长文字"></textarea>
-      <button class="popup-btn" onclick="publishMoment()">发布</button>
-    </div>
-  </div>
-</div>
+  
+    注册微信×
+    
+      
+      
+      
+      
+      注 册
+    
+  
 
-<script>
-// ===================== Supabase基础配置（固定不变） =====================
-const SUPABASE_URL = "https://ugtrspnsngedyepfgkv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_d1-0HBu43VwGBx2q3IKWQ_gyUpb_";
+
+
+  
+    💬 微信
+    + 添加
+  
+  
+    💬 消息
+    👥 通讯录
+    🌤 朋友圈
+    👤 我的
+  
+
+  暂无会话
+  暂无好友
+  
+    ✏️ 发布朋友圈
+    
+  
+  
+    
+      👤
+      未登录
+      这个人很懒，什么都没写
+    
+    
+      
+        🚪
+        退出登录
+      
+    
+  
+
+
+
+  
+    ‹
+    聊天
+    ⋯
+  
+  
+  
+    
+    发送
+  
+
+
+
+  
+    ‹
+    群聊信息
+  
+  
+    
+      群公告
+      暂无群公告
+    
+    
+      
+      
+        +
+        -
+      
+    
+  
+
+
+
+  
+    发布朋友圈×
+    
+      
+      发布
+    
+  
+
+
+
+// ===================== Supabase基础配置（已修复 ✅） =====================
+const SUPABASE_URL = "https://ugtrspnsnsngyedpfgkv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_d1-OHBu43VvWGbX2q3IkWQ_gyUpbak5";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
@@ -249,7 +239,6 @@ let currentChatRoom = null;
 let currentGroupId = null;
 let localUser = JSON.parse(localStorage.getItem('wxUser'));
 
-// Toast全局提示，平滑动画
 function toast(msg){
   let div = document.createElement('div');
   div.className = 'toast';
@@ -258,35 +247,24 @@ function toast(msg){
   setTimeout(()=>div.remove(),1600);
 }
 
-// 输入框自动高度自适应，解决长文本输入问题
 function autoResize(el){
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight,120)+'px';
 }
 
-// 弹窗通用控制
 function showPopup(id){document.getElementById(id).classList.add('show');}
 function closePopup(id){document.getElementById(id).classList.remove('show');}
 
-// ===================== 注册、登录完整逻辑 =====================
 async function doRegister(){
   const uid = document.getElementById('regId').value.trim();
   const pwd = document.getElementById('regPwd').value;
   const pwd2 = document.getElementById('regPwd2').value;
   const name = document.getElementById('regName').value.trim();
-
   if(!/^\d+$/.test(uid)){toast('微信号只能为纯数字');return}
-  if(pwd.length<6){toast('密码不少于6位');return}
-  if(pwd!==pwd2){toast('两次密码不一致');return}
-  if(!name){toast('请填写昵称');return}
-
-  const {data:exist} = await supabase.from('users').select('id').eq('id',uid);
-  if(exist.length>0){toast('微信号已被注册');return}
-
+  if(pwd.length0){toast('微信号已被注册');return}
   const {data:newUser} = await supabase.from('users').insert([{
     id:uid,password:pwd,name:name,sign:'这个人很懒，什么都没写',status:'normal',is_admin:false
   }]).select().single();
-
   currentUser = newUser;
   localStorage.setItem('wxUser',JSON.stringify(newUser));
   closePopup('registerPopup');
@@ -299,11 +277,9 @@ async function doLogin(){
   const uid = document.getElementById('loginId').value.trim();
   const pwd = document.getElementById('loginPwd').value.trim();
   if(!uid||!pwd){toast('请填写账号密码');return}
-
   const {data:user} = await supabase.from('users').select('*').eq('id',uid).single();
   if(!user){toast('账号不存在');return}
   if(user.password!==pwd){toast('密码错误');return}
-
   currentUser = user;
   localStorage.setItem('wxUser',JSON.stringify(user));
   showMainPage();
@@ -316,13 +292,11 @@ function showMainPage(){
   document.getElementById('mainPage').style.display = 'flex';
 }
 
-// 加载个人信息
 function loadMyInfo(){
   document.getElementById('myName').innerText = currentUser.name;
   document.getElementById('mySign').innerText = currentUser.sign;
 }
 
-// 退出登录
 function doLogout(){
   currentUser = null;
   localStorage.removeItem('wxUser');
@@ -330,7 +304,6 @@ function doLogout(){
   document.getElementById('loginPage').style.display = 'flex';
 }
 
-// 底部导航栏切换
 function switchTab(type){
   const arr = ['chats','contacts','moments','me'];
   arr.forEach(t=>{
@@ -343,14 +316,12 @@ function switchTab(type){
   document.getElementById('content'+capType).style.display = 'block';
 }
 
-// ===================== 私聊聊天完整功能 =====================
 async function openChat(roomId,title,gid=null){
   currentChatRoom = roomId;
   currentGroupId = gid;
   document.getElementById('mainPage').style.display = 'none';
   document.getElementById('chatPage').style.display = 'flex';
   document.getElementById('chatTitle').innerText = title;
-  //群聊才显示右上角三个点
   document.getElementById('chatMoreBtn').style.display = gid ? 'block' : 'none';
   document.getElementById('chatMessages').innerHTML = '';
   loadChatMessages();
@@ -363,50 +334,42 @@ function closeChat(){
   document.getElementById('mainPage').style.display = 'flex';
 }
 
-// 加载历史聊天记录
 async function loadChatMessages(){
   if(!currentChatRoom)return;
   const {data} = await supabase.from('messages')
     .select(`*,sender:users(id,name)`)
     .eq('room_id',currentChatRoom)
     .order('create_time',{ascending:true});
-
   let html = '';
   data.forEach(msg=>{
     let isMe = msg.sender_id === currentUser.id;
     html += `
-    <div class="chat-msg ${isMe?'me':''}">
-      <div class="chat-avatar">${msg.sender.name.substring(0,1)}</div>
-      <div class="chat-bubble-wrap">
-        ${!isMe ? `<div class="chat-sender-name">${msg.sender.name}</div>`:''}
-        <div class="chat-bubble">${msg.content}</div>
-      </div>
-    </div>`
+      ${msg.sender.name.substring(0,1)}
+      
+        ${!isMe ? `${msg.sender.name}`:''}
+        ${msg.content}
+      
+    `;
   });
   document.getElementById('chatMessages').innerHTML = html;
-  //自动滚动到底部，原生流畅实现
   const box = document.getElementById('chatMessages');
   box.scrollTop = box.scrollHeight;
 }
 
-// 发送消息，超长文本完美支持
 async function sendMessage(){
   const input = document.getElementById('chatInput');
   const content = input.value.trim();
   if(!content || !currentChatRoom)return;
-
   await supabase.from('messages').insert([{
     room_id:currentChatRoom,
     sender_id:currentUser.id,
     content:content
   }]);
-
   input.value = '';
   input.style.height = 'auto';
   loadChatMessages();
 }
 
-// ===================== 群资料页面核心功能（加号减号增减成员） =====================
 async function openGroupInfo(){
   if(!currentGroupId) return;
   document.getElementById('chatPage').style.display = 'none';
@@ -419,112 +382,56 @@ function closeGroupInfo(){
   document.getElementById('chatPage').style.display = 'flex';
 }
 
-// 加载群信息、群公告、群成员列表
 async function loadGroupInfo(){
   if(!currentGroupId) return;
-  //查询群基础信息
   const {data:groupData} = await supabase.from('groups').select('*').eq('id',currentGroupId).single();
   document.getElementById('groupInfoTitle').innerText = groupData.name;
   document.getElementById('groupNoticeContent').innerText = groupData.notice || '暂无群公告';
-
-  //查询所有群成员
   const {data:memberList} = await supabase.from('group_members')
     .select('*,user:users(id,name)')
     .eq('group_id',currentGroupId);
-
   let memberHtml = '';
   memberList.forEach(item=>{
     memberHtml += `
-    <div class="group-member-cell">
-      <div class="group-member-avatar">${item.user.name.substring(0,1)}</div>
-      <div class="group-member-name">${item.user.name}</div>
-    </div>`
+      ${item.user.name.substring(0,1)}
+      ${item.user.name}
+    `;
   });
-  //成员全部渲染完毕后，末尾固定显示+/-按钮，严格按照需求实现
   document.getElementById('groupMemberGrid').innerHTML = memberHtml;
 }
 
-// 加号：新增群成员
 async function addGroupMember(){
   if(!currentGroupId) return;
-  //随机选取系统已有用户加入群聊，真实业务逻辑
   const {data:allUser} = await supabase.from('users').select('id,name').neq('id',currentUser.id);
   if(allUser.length === 0){toast('暂无可添加用户');return}
   const randomUser = allUser[Math.floor(Math.random()*allUser.length)];
-
-  //判断是否已经在群内，避免重复添加
   const {data:exist} = await supabase.from('group_members')
-    .select('id')
-    .eq('group_id',currentGroupId)
-    .eq('user_id',randomUser.id);
-
+    .select('id').eq('group_id',currentGroupId).eq('user_id',randomUser.id);
   if(exist.length > 0){toast('该用户已在群内');return}
-
-  await supabase.from('group_members').insert([{
-    group_id:currentGroupId,
-    user_id:randomUser.id
-  }]);
+  await supabase.from('group_members').insert([{group_id:currentGroupId,user_id:randomUser.id}]);
   await loadGroupInfo();
   toast('成功添加成员');
 }
 
-// 减号：移除最后一位群成员（保留群主本人）
 async function removeGroupMember(){
   if(!currentGroupId) return;
   const {data:memberList} = await supabase.from('group_members')
-    .select('id,user_id')
-    .eq('group_id',currentGroupId);
-
-  if(memberList.length <= 1){toast('群人数不可少于1人');return}
-  //删除最后一个成员
-  const lastMember = memberList[memberList.length-1];
-  await supabase.from('group_members').delete().eq('id',lastMember.id);
-  await loadGroupInfo();
-  toast('已移除最后一位成员');
-}
-
-// ===================== 朋友圈完整功能 =====================
-function showMomentPopup(){showPopup('momentPopup');}
-
-async function publishMoment(){
-  const content = document.getElementById('momentContent').value.trim();
-  if(!content){toast('请输入内容');return}
-
-  await supabase.from('moments').insert([{
-    uid:currentUser.id,content:content
-  }]);
-
-  closePopup('momentPopup');
-  loadAllMoments();
-  toast('发布成功');
-}
-
-async function loadAllMoments(){
-  const {data} = await supabase.from('moments')
-    .select('*,user:users(id,name)')
-    .order('create_time',{ascending:false});
-
-  let html = '';
-  data.forEach(item=>{
+    .select('id,user_id').eq('group_id',currentGroupId);
+  if(memberList.length {
     html += `
-    <div class="moment-item">
-      <div class="moment-header">
-        <div class="moment-avatar">${item.user.name.substring(0,1)}</div>
-        <div>
-          <div class="moment-name">${item.user.name}</div>
-          <div class="moment-time">${new Date(item.create_time).toLocaleString()}</div>
-        </div>
-      </div>
-      <div class="moment-content">${item.content}</div>
-    </div>`
+      
+        ${item.user.name.substring(0,1)}
+        ${item.user.name}
+        ${new Date(item.create_time).toLocaleString()}
+      
+      ${item.content}
+    `;
   });
   document.getElementById('momentList').innerHTML = html;
 }
 
-// 预留添加菜单入口，不改动原有结构
 function showAddMenu(){toast('添加好友功能开发中')}
 
-// 页面初始化，自动读取本地登录状态
 window.onload = async function(){
   if(localUser){
     const {data} = await supabase.from('users').select('*').eq('id',localUser.id).single();
@@ -538,6 +445,5 @@ window.onload = async function(){
     }
   }
 }
-</script>
-</body>
-</html>
+
+
